@@ -9,7 +9,7 @@ async function main() {
 
   fs.writeFileSync(
     './config.js',`
-    export const marketplaceAddress = "${secretRecipe.address}"
+    export const contractAddress = "${secretRecipe.address}"
     export const ownerAddress = "${secretRecipe.signer.address}"
     `)
 }

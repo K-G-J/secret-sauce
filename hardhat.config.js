@@ -12,7 +12,7 @@ module.exports = {
     mumbai: {
       // Alchemy
       // url: `https://polygon-mumbai.g.alchemy.com/v2/${alchemyId}`
-      url: "https://rpc-mumbai.matic.today",
+      url: "https://rpc-mumbai.maticvigil.com",
       accounts: [privateKey]
     },
     matic: {
