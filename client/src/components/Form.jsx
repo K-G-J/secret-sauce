@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useMoralisFile } from 'react-moralis'
 import { ethers, utils } from 'ethers'
+import Moralis from 'moralis'
 
 import SecretRecipe from '../ContractABI.json'
 import { contractAddress } from '../config'
@@ -23,9 +24,9 @@ export default function Form({ setPopupActive, ethAddress, rpcUrl }) {
       alert('Please fill out all the fields')
       return
     }
-
-    const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
-    const signer = provider.getSigner();
+    
+    const provider = await Moralis.enableWeb3();
+    const signer = provider.getSigner()
     const contract = new ethers.Contract(contractAddress, SecretRecipe.abi, signer)
     await contract.addRecipe(form)
 
@@ -77,7 +78,6 @@ export default function Form({ setPopupActive, ethAddress, rpcUrl }) {
       }
     })
     }
-    console.log(urls)
     setForm({ ...form, images: [...form.images, urls] })
   }
   return (

@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react'
 
 import SecretRecipe from './ContractABI.json'
 import { contractAddress } from './config'
+import Moralis from 'moralis'
 
 function App() {
   const [whitelist, setWhitelist] = useState([])
@@ -14,20 +15,18 @@ function App() {
   const [authenticated, setAuthenticated] = useState(false)
   const [ethAddress, setEthAddress] = useState(null)
   const [popupActive, setPopupActive] = useState(false)
-  const { authenticate, user, logout, isLoggingOut } = useMoralis()
+  const { isAuthenticated, authenticate, user, logout, isLoggingOut } = useMoralis()
 
   const rpcUrl = 'https://rpc-mumbai.maticvigil.com'
 
   useEffect(() => {
-    async function loadData() {
+    async function loadWhitelist() {
       const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
       const contract = new ethers.Contract(contractAddress, SecretRecipe.abi, provider)
       const contractWhitelist = await contract.getPermitted()
       setWhitelist(contractWhitelist)
-      const contractRecipes = await contract.getRecipes()
-      setRecipes(contractRecipes)
     }
-    loadData()
+    loadWhitelist()
   }, [])
 
   const connectWallet = async () => {
@@ -39,6 +38,11 @@ function App() {
     setEthAddress(formattedAddress)
     if (whitelist.includes(formattedAddress)) {
       setAuthenticated(true)
+      const provider = await Moralis.enableWeb3();
+      const signer = provider.getSigner()
+      const contract = new ethers.Contract(contractAddress, SecretRecipe.abi, signer)
+      const contractRecipes = await contract.getRecipes()
+      setRecipes(contractRecipes)
     }
   }
 
@@ -71,7 +75,7 @@ function App() {
           <button onClick={connectWallet}>Authenticate</button>
         </div>
       )}
-      {authenticated && (
+      {authenticated && isAuthenticated && (
         <div>
           <div className="logo-container">
             <h1 onClick={refresh} id="logo-text">
