@@ -4,11 +4,12 @@
   --darker: #262336;
   --blue: #61dafb;
   --crimson: #db3052;
+  --accent:   #b084cc;;
   /* --light: #acfcd9;
   --dark: #665687;
   --darker: #190933;
   --blue: #51bea8;
-  --crimson: #b084cc; */
+  --crimson:  #b084cc;; */
 }
 
 * {
@@ -46,12 +47,13 @@ body {
   margin-top: 15em;
 }
 #logo-text {
-  color: #b084cc;
+  color: var(--accent);
   font-family: 'Trocchi', serif;
   font-size: 45px;
   font-weight: normal;
   line-height: 48px;
   margin: 0;
+  margin-bottom: .75em;
 }
 
 h1 {
@@ -150,7 +152,7 @@ h1 {
   border-color: none;
 }
 .rec-carousel-control {
-  color: #b084cc;
+  color: var(--accent);
 }
 .rec-carousel-item:enabled {
   background-color: none;
@@ -165,47 +167,47 @@ h1 {
 }
 .rec.rec-arrow:disabled {
   border-radius: 5;
-  background-color: #b084cc;
+  background-color: var(--accent);
 }
 .rec.rec-arrow:enabled {
   border-radius: 5;
-  background-color: #b084cc;
+  background-color: var(--accent);
 }
 .rec.rec-arrow:enabled:hover {
   border-radius: 5;
-  background-color: #b084cc;
+  background-color: var(--accent);
 }
 .rec.rec-arrow:disabled:hover {
   border-radius: 5;
-  background-color: #b084cc;
+  background-color: var(--accent);
 }
 .rec.rec-arrow:enabled:not(:hover) {
   border-radius: 5;
-  background-color: #b084cc;
+  background-color: var(--accent);
 }
 .rec.rec-arrow:disabled:not(:hover) {
   border-radius: 5;
-  background-color: #b084cc;
+  background-color: var(--accent);
 }
 .rec.rec-arrow:disabled:hover {
   border-radius: 5;
-  background-color: #b084cc;
+  background-color: var(--accent);
 }
 .rec.rec-arrow:not(:disabled) {
   border-radius: 5;
-  background-color: #b084cc;
+  background-color: var(--accent);
 }
 .rec.rec-arrow:not(:enabled) {
   border-radius: 5;
-  background-color: #b084cc;
+  background-color: var(--accent);
 }
 .rec.rec-arrow {
   border-radius: 5;
-  background-color: #b084cc;
+  background-color: var(--accent);
 }
 
 .rec.rec-dot_active {
-  background: #b084cc;
+  background: var(--accent);
   box-shadow: 0 0 1px 1px lightgray;
 }
 
@@ -330,7 +332,7 @@ progress::-webkit-progress-bar {
   border-radius: 1.5rem;
 }
 progress::-webkit-progress-value {
-  background-color: #b084cc;
+  background-color: var(--accent);
   border-radius: 1.5rem;
   box-shadow: 1px 1px 5px 0px lightgray;
 }

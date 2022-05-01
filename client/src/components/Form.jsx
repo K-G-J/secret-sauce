@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useMoralisFile } from 'react-moralis'
-import { ethers, utils } from 'ethers'
+import { ethers } from 'ethers'
 import Moralis from 'moralis'
 
 import SecretRecipe from '../ContractABI.json'
 import { contractAddress } from '../config'
 
-export default function Form({ setPopupActive, ethAddress, rpcUrl }) {
+export default function Form({ setPopupActive }) {
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -24,22 +24,22 @@ export default function Form({ setPopupActive, ethAddress, rpcUrl }) {
       alert('Please fill out all the fields')
       return
     }
-    
-    const provider = await Moralis.enableWeb3();
+    const provider = await Moralis.enableWeb3()
     const signer = provider.getSigner()
     const contract = new ethers.Contract(contractAddress, SecretRecipe.abi, signer)
-    await contract.addRecipe(form)
+    console.log(form)
+    await contract.addRecipe(form.title, form.description, form.ingredients, form.steps, form.images)
 
     setForm({
       title: '',
       description: '',
-      link: '',
       ingredients: [],
       steps: [],
       images: [],
     })
     setPopupActive(false)
   }
+  
   const handleIngredient = (e, i) => {
     const ingredientsClone = [...form.ingredients]
 
@@ -60,23 +60,26 @@ export default function Form({ setPopupActive, ethAddress, rpcUrl }) {
   const handleStepCount = () => {
     setForm({ ...form, steps: [...form.steps, ''] })
   }
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     for (let i = 0; i < e.target.files.length; i++) {
       const newImage = e.target.files[i]
       newImage.id = Math.random()
       setImages((prevState) => [...prevState, newImage])
     }
+    await handleImages()
   }
 
   const handleImages = async () => {
     const urls = []
-    for (const image of images) {
-      await saveFile(image.name, image, {
-      saveIPFS: true,
-      onSuccess: async (file) => {
-        urls.push(file._ipfs)
-      }
-    })
+    for (let i = 0; i < images.length; i++) {
+      await saveFile(images[i].name, images[i], {
+        saveIPFS: true,
+        onSuccess: async (file) => {
+          urls.push(file._ipfs)
+          let uploadProgress = ((100 / images.length) * (i + 1))
+          setProgress(uploadProgress)
+        },
+      })
     }
     setForm({ ...form, images: [...form.images, urls] })
   }
@@ -100,7 +103,9 @@ export default function Form({ setPopupActive, ethAddress, rpcUrl }) {
             <textarea
               type="text"
               value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
             />
           </div>
 

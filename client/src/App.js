@@ -9,20 +9,30 @@ import SecretRecipe from './ContractABI.json'
 import { contractAddress } from './config'
 import Moralis from 'moralis'
 
+const rpcUrl = 'https://rpc-mumbai.maticvigil.com'
+
 function App() {
   const [whitelist, setWhitelist] = useState([])
   const [recipes, setRecipes] = useState([])
   const [authenticated, setAuthenticated] = useState(false)
   const [ethAddress, setEthAddress] = useState(null)
   const [popupActive, setPopupActive] = useState(false)
-  const { isAuthenticated, authenticate, user, logout, isLoggingOut } = useMoralis()
-
-  const rpcUrl = 'https://rpc-mumbai.maticvigil.com'
+  const {
+    isAuthenticated,
+    authenticate,
+    user,
+    logout,
+    isLoggingOut,
+  } = useMoralis()
 
   useEffect(() => {
     async function loadWhitelist() {
       const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
-      const contract = new ethers.Contract(contractAddress, SecretRecipe.abi, provider)
+      const contract = new ethers.Contract(
+        contractAddress,
+        SecretRecipe.abi,
+        provider,
+      )
       const contractWhitelist = await contract.getPermitted()
       setWhitelist(contractWhitelist)
     }
@@ -38,7 +48,7 @@ function App() {
     setEthAddress(formattedAddress)
     if (whitelist.includes(formattedAddress)) {
       setAuthenticated(true)
-      const provider = await Moralis.enableWeb3();
+      const provider = await Moralis.enableWeb3()
       const signer = provider.getSigner()
       const contract = new ethers.Contract(contractAddress, SecretRecipe.abi, signer)
       const contractRecipes = await contract.getRecipes()
@@ -64,8 +74,15 @@ function App() {
     setRecipes(recipesClone)
   }
 
-  const removeRecipe = (id) => {
-    //deleteRecipe()
+  const removeRecipe = async (id) => {
+    const provider = await Moralis.enableWeb3()
+    const signer = provider.getSigner()
+    const contract = new ethers.Contract(
+      contractAddress,
+      SecretRecipe.abi,
+      signer,
+    )
+    await contract.deleteRecipe(id)
   }
 
   return (
@@ -96,7 +113,9 @@ function App() {
               />
             ))}
           </div>
-          {popupActive && <Form setPopupActive={setPopupActive} ethAddress={ethAddress} rpcUrl={rpcUrl} />}
+          {popupActive && (
+            <Form setPopupActive={setPopupActive} ethAddress={ethAddress} />
+          )}
         </div>
       )}
     </div>

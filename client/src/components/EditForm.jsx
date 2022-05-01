@@ -6,7 +6,6 @@ export default function EditForm({ recipe, setEditForm }) {
   const [updatedRecipe, updateRecipe] = useState({
     title: recipeClone.title,
     description: recipeClone.description,
-    link: recipeClone.link,
     ingredients: recipeClone.ingredients,
     steps: recipeClone.steps,
     images: recipeClone.images,

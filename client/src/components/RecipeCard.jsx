@@ -21,12 +21,6 @@ export default function RecipeCard({ recipe, onRemoveRecipe, onHandleView }) {
     <div className="recipe" key={recipe.id}>
       <h3>{recipe.title}</h3>
 
-      {recipe.link && (
-        <a className="recipe-link" href={recipe.link} target="_blank">
-          <p className="recipe-link">view online</p>
-        </a>
-      )}
-
       <p dangerouslySetInnerHTML={{ __html: recipe.description }}></p>
 
       {recipe.viewing && (
