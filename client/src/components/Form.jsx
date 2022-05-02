@@ -6,7 +6,7 @@ import Moralis from 'moralis'
 import SecretRecipe from '../ContractABI.json'
 import { contractAddress } from '../config'
 
-export default function Form({ setPopupActive }) {
+export default function Form({ setPopupActive, setLoading, setRecipes }) {
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -36,8 +36,12 @@ export default function Form({ setPopupActive }) {
       steps: [],
       images: [],
     })
+    setLoading(true)
     setPopupActive(false)
     await transaction.wait()
+    let contractRecipes = await contract.getRecipes()
+    setRecipes(contractRecipes)
+    setLoading(false)
   }
   
   const handleIngredient = (e, i) => {

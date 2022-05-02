@@ -6,7 +6,7 @@ import Moralis from 'moralis'
 import SecretRecipe from '../ContractABI.json'
 import { contractAddress } from '../config'
 
-export default function EditForm({ recipe, setEditForm }) {
+export default function EditForm({ recipe, setEditForm, setLoading, setRecipes }) {
   const recipeClone = { ...recipe }
   const { saveFile } = useMoralisFile()
 
@@ -30,7 +30,7 @@ export default function EditForm({ recipe, setEditForm }) {
     const provider = await Moralis.enableWeb3()
     const signer = provider.getSigner()
     const contract = new ethers.Contract(contractAddress, SecretRecipe.abi, signer)
-    const transaction = await contract.addRecipe(id, updatedRecipe.title, updatedRecipe.description, updatedRecipe.ingredients, updatedRecipe.steps, updatedRecipe.images)
+    const transaction = await contract.editRecipe(id, updatedRecipe.title, updatedRecipe.description, updatedRecipe.ingredients, updatedRecipe.steps, updatedRecipe.images)
 
     updateRecipe({
       title: '',
@@ -40,7 +40,11 @@ export default function EditForm({ recipe, setEditForm }) {
       images: [],
     })
     setEditForm(false);
+    setLoading(true)
     await transaction.wait()
+    let contractRecipes = await contract.getRecipes()
+    setRecipes(contractRecipes)
+    setLoading(false)
   }
 
   const handleIngredient = (e, i) => {

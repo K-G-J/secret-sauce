@@ -10,16 +10,28 @@ import { contractAddress } from './config'
 import Moralis from 'moralis'
 // import { ConnectButton } from 'web3uikit'
 
+import { css } from "@emotion/react";
+import ClockLoader from "react-spinners/ClockLoader";
+
+// Can be a string as well. Need to ensure each key-value pair ends with ;
+const override = css`
+  display: block;
+  margin: 4em auto;
+  border-color: white;
+`;
+
 const rpcUrl = 'https://rpc-mumbai.maticvigil.com'
 
 function App() {
   const [whitelist, setWhitelist] = useState([])
   const [recipes, setRecipes] = useState([])
   const [authenticated, setAuthenticated] = useState(false)
-  const [ethAddress, setEthAddress] = useState(null)
   const [popupActive, setPopupActive] = useState(false)
   const [viewing, setViewing] = useState(false)
   const { isAuthenticated, authenticate, user, logout, isLoggingOut } = useMoralis()
+
+  let [loading, setLoading] = useState(false);
+  let [color, setColor] = useState("#ffffff");
 
 
   useEffect(() => {
@@ -42,13 +54,12 @@ function App() {
     })
     const address = user.get('ethAddress')
     const formattedAddress = utils.getAddress(address)
-    setEthAddress(formattedAddress)
     if (whitelist.includes(formattedAddress)) {
       setAuthenticated(true)
       const provider = await Moralis.enableWeb3()
       const signer = provider.getSigner()
       const contract = new ethers.Contract(contractAddress, SecretRecipe.abi, signer)
-      const contractRecipes = await contract.getRecipes()
+      let contractRecipes = await contract.getRecipes()
       setRecipes(contractRecipes)
     }
   }
@@ -75,7 +86,12 @@ function App() {
     const provider = await Moralis.enableWeb3()
     const signer = provider.getSigner()
     const contract = new ethers.Contract( contractAddress, SecretRecipe.abi, signer )
-    await contract.deleteRecipe(id)
+    const transaction = await contract.deleteRecipe(id)
+    setLoading(true)
+    await transaction.wait()
+    let contractRecipes = await contract.getRecipes()
+    setRecipes(contractRecipes)
+    setLoading(false)
   }
 
   return (
@@ -93,11 +109,16 @@ function App() {
               Secret Sauce
             </h1>
           </div>
-          <button onClick={() => setPopupActive(!popupActive)}>
+          <button onClick={() => setPopupActive(!popupActive)} disabled={loading}>
             Add recipe
           </button>
-          <div className="recipes">
-            {recipes.map((recipe, i) => (
+          
+          <div className="sweet-loading">
+          <ClockLoader color={color} loading={loading} css={override} size={150} />
+          </div>
+
+         <div className="recipes">
+            { !loading && recipes.map((recipe, i) => (
               <RecipeCard
                 className="recipeCard"
                 key={i}
@@ -105,11 +126,13 @@ function App() {
                 viewing={viewing}
                 onHandleView={handleView}
                 onRemoveRecipe={removeRecipe}
+                setLoading={setLoading}
+                setRecipes={setRecipes}
               />
             ))}
           </div>
           {popupActive && (
-            <Form setPopupActive={setPopupActive} ethAddress={ethAddress} />
+            <Form setPopupActive={setPopupActive} setLoading={setLoading} setRecipes={setRecipes} />
           )}
         </div>
       )}
