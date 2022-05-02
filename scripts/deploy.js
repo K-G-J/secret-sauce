@@ -8,7 +8,7 @@ async function main() {
   console.log('SecretRecipe deployed to:', secretRecipe.address)
 
   fs.writeFileSync(
-    './config.js',`
+    './client/src/config.js',`
     export const contractAddress = "${secretRecipe.address}"
     export const ownerAddress = "${secretRecipe.signer.address}"
     `)
