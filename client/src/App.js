@@ -4,6 +4,7 @@ import Form from './components/Form.jsx'
 import { ethers, utils } from 'ethers'
 import { useMoralis } from 'react-moralis'
 import { useState, useEffect } from 'react'
+import { StateContext } from './context'
 
 import SecretRecipe from './ContractABI.json'
 import { contractAddress } from './config'
@@ -73,7 +74,7 @@ function App() {
 
     recipesClone.forEach((recipe) => {
       if (recipe.id === id) {
-         setViewing(!viewing)
+        setViewing(!viewing)
       } else {
         setViewing(false)
       }
@@ -95,6 +96,7 @@ function App() {
   }
 
   return (
+    <StateContext.Provider value={{setLoading, loading, setPopupActive, popupActive, setRecipes, recipes, setViewing, viewing }}>
     <div className="App">
       {!authenticated && (
         <div className="auth-btn">
@@ -117,26 +119,24 @@ function App() {
           <ClockLoader color={color} loading={loading} css={override} size={150} />
           </div>
 
-         <div className="recipes">
+        <div className="recipes">
             { !loading && recipes.map((recipe, i) => (
               <RecipeCard
                 className="recipeCard"
                 key={i}
                 recipe={recipe}
-                viewing={viewing}
                 onHandleView={handleView}
                 onRemoveRecipe={removeRecipe}
-                setLoading={setLoading}
-                setRecipes={setRecipes}
               />
             ))}
           </div>
           {popupActive && (
-            <Form setPopupActive={setPopupActive} setLoading={setLoading} setRecipes={setRecipes} />
+            <Form />
           )}
         </div>
       )}
-    </div>
+      </div>
+    </StateContext.Provider>
   )
 }
 

@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+import { StateContext } from '../context'
 import { useMoralisFile } from 'react-moralis'
 import { ethers } from 'ethers'
 import Moralis from 'moralis'
@@ -6,7 +7,9 @@ import Moralis from 'moralis'
 import SecretRecipe from '../ContractABI.json'
 import { contractAddress } from '../config'
 
-export default function EditForm({ recipe, setEditForm, setLoading, setRecipes }) {
+export default function EditForm({ recipe, setEditForm }) {
+  const { setLoading, setRecipes } = useContext(StateContext)
+
   const recipeClone = { ...recipe }
   const { saveFile } = useMoralisFile()
 
@@ -75,7 +78,6 @@ export default function EditForm({ recipe, setEditForm, setLoading, setRecipes }
       setImages((prevState) => [...prevState, newImage])
     }
   }
-
   const handleImages = async () => {
     const urls = []
     for (let i = 0; i < images.length; i++) {

@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+import { StateContext } from '../context'
 import { useMoralisFile } from 'react-moralis'
 import { ethers } from 'ethers'
 import Moralis from 'moralis'
@@ -6,7 +7,8 @@ import Moralis from 'moralis'
 import SecretRecipe from '../ContractABI.json'
 import { contractAddress } from '../config'
 
-export default function Form({ setPopupActive, setLoading, setRecipes }) {
+export default function Form() {
+  const { setPopupActive, setLoading, setRecipes } = useContext(StateContext)
   const [form, setForm] = useState({
     title: '',
     description: '',

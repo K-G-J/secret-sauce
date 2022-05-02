@@ -31,26 +31,13 @@ describe('SecretRecipe', async function () {
     const SecretRecipe = await ethers.getContractFactory('SecretRecipe')
     const secretRecipe = await SecretRecipe.deploy()
     await secretRecipe.deployed()
-    await secretRecipe.addRecipe(
-      'Test Title',
-      'This is a test decription',
-      ['ingredient1', 'ingredient2', 'ingredient3'],
-      ['step1', 'step2', 'step3'],
-      ['image1', 'image2', 'image3'],
-    )
+    await secretRecipe.addRecipe( 'Test Title', 'This is a test description', ['ingredient1', 'ingredient2', 'ingredient3'], ['step1', 'step2', 'step3'], ['image1', 'image2', 'image3'] )
 
-    await secretRecipe.editRecipe(
-      1,
-      'Changed Title',
-      'This is a changed test decription',
-      ['ingredient4', 'ingredient5', 'ingredient6'],
-      ['step4', 'step5', 'step6'],
-      ['image4', 'image5', 'image6'],
-    )
+    await secretRecipe.editRecipe( 1, 'Changed Title', 'This is a changed test description', ['ingredient4', 'ingredient5', 'ingredient6'], ['step4', 'step5', 'step6'], ['image4', 'image5', 'image6'] )
 
     const recipes = await secretRecipe.getRecipes()
     expect(recipes[0].title).to.equal('Changed Title')
-    expect(recipes[0].description).to.equal('This is a changed test decription')
+    expect(recipes[0].description).to.equal('This is a changed test description')
     expect(recipes[0].ingredients).to.eql([
       'ingredient4',
       'ingredient5',

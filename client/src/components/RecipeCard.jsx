@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
+import { useState, useContext } from 'react'
+import { StateContext } from '../context'
 import Carousel from 'react-elastic-carousel'
 import EditForm from './EditForm'
 
-export default function RecipeCard({ recipe, viewing, onRemoveRecipe, onHandleView, setLoading, setRecipes }) {
+export default function RecipeCard({recipe, onRemoveRecipe, onHandleView}) {
   const [editForm, setEditForm] = useState(false)
   const [isZoom, setZoom] = useState('false')
+  const { viewing, setLoading, setRecipes } = useContext(StateContext)
 
   const breakPoints = [
     { width: 1, itemsToShow: 1 },
@@ -76,7 +78,7 @@ export default function RecipeCard({ recipe, viewing, onRemoveRecipe, onHandleVi
           Edit
         </button>
       </div>
-      {editForm && <EditForm recipe={recipe} setEditForm={setEditForm} setLoading={setLoading} setRecipes={setRecipes} />}
+      {editForm && <EditForm recipe={recipe} setEditForm={setEditForm} />}
     </div>
   )
 }
