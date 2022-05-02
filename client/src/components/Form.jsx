@@ -27,8 +27,7 @@ export default function Form({ setPopupActive }) {
     const provider = await Moralis.enableWeb3()
     const signer = provider.getSigner()
     const contract = new ethers.Contract(contractAddress, SecretRecipe.abi, signer)
-    console.log(form)
-    await contract.addRecipe(form.title, form.description, form.ingredients, form.steps, form.images)
+    const transaction = await contract.addRecipe(form.title, form.description, form.ingredients, form.steps, form.images)
 
     setForm({
       title: '',
@@ -38,6 +37,7 @@ export default function Form({ setPopupActive }) {
       images: [],
     })
     setPopupActive(false)
+    await transaction.wait()
   }
   
   const handleIngredient = (e, i) => {
@@ -57,9 +57,11 @@ export default function Form({ setPopupActive }) {
   const handleIngredientCount = () => {
     setForm({ ...form, ingredients: [...form.ingredients, ''] })
   }
+
   const handleStepCount = () => {
     setForm({ ...form, steps: [...form.steps, ''] })
   }
+
   const handleChange = async (e) => {
     for (let i = 0; i < e.target.files.length; i++) {
       const newImage = e.target.files[i]
@@ -81,8 +83,9 @@ export default function Form({ setPopupActive }) {
         },
       })
     }
-    setForm({ ...form, images: [...form.images, urls] })
+    setForm({ ...form, images: urls })
   }
+
   return (
     <div className="popup">
       <div className="popup-inner">
@@ -155,7 +158,6 @@ export default function Form({ setPopupActive }) {
               onChange={handleChange}
             />
             <button type="button" onClick={handleImages}>
-              {' '}
               Click to upload pics
             </button>
           </div>
@@ -167,8 +169,7 @@ export default function Form({ setPopupActive }) {
               className="remove"
               onClick={() => setPopupActive(false)}
             >
-              {' '}
-              Close{' '}
+              Close
             </button>
           </div>
         </form>

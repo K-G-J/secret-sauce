@@ -1,7 +1,14 @@
 import { useState } from 'react'
+import { useMoralisFile } from 'react-moralis'
+import { ethers } from 'ethers'
+import Moralis from 'moralis'
+
+import SecretRecipe from '../ContractABI.json'
+import { contractAddress } from '../config'
 
 export default function EditForm({ recipe, setEditForm }) {
   const recipeClone = { ...recipe }
+  const { saveFile } = useMoralisFile()
 
   const [updatedRecipe, updateRecipe] = useState({
     title: recipeClone.title,
@@ -16,7 +23,26 @@ export default function EditForm({ recipe, setEditForm }) {
 
   const handleUpdate = async (e, id) => {
     e.preventDefault()
+    if (!updatedRecipe.title || !updatedRecipe.description || !updatedRecipe.ingredients || !updatedRecipe.steps) {
+      alert('Please fill out all the fields')
+      return
+    }
+    const provider = await Moralis.enableWeb3()
+    const signer = provider.getSigner()
+    const contract = new ethers.Contract(contractAddress, SecretRecipe.abi, signer)
+    const transaction = await contract.addRecipe(id, updatedRecipe.title, updatedRecipe.description, updatedRecipe.ingredients, updatedRecipe.steps, updatedRecipe.images)
+
+    updateRecipe({
+      title: '',
+      description: '',
+      ingredients: [],
+      steps: [],
+      images: [],
+    })
+    setEditForm(false);
+    await transaction.wait()
   }
+
   const handleIngredient = (e, i) => {
     const ingredientsClone = [...updatedRecipe.ingredients]
 
@@ -46,9 +72,21 @@ export default function EditForm({ recipe, setEditForm }) {
     }
   }
 
-  const handleImages = () => {
+  const handleImages = async () => {
     const urls = []
+    for (let i = 0; i < images.length; i++) {
+      await saveFile(images[i].name, images[i], {
+        saveIPFS: true,
+        onSuccess: async (file) => {
+          urls.push(file._ipfs)
+          let uploadProgress = ((100 / images.length) * (i + 1))
+          setProgress(uploadProgress)
+        },
+      })
+    }
+    updateRecipe({ ...updatedRecipe, images: urls })
   }
+
   return (
     <div className="popup">
       <div className="popup-inner">
@@ -140,8 +178,7 @@ export default function EditForm({ recipe, setEditForm }) {
               className="remove"
               onClick={() => setEditForm(false)}
             >
-              {' '}
-              Close{' '}
+              Close
             </button>
           </div>
         </form>

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Carousel from 'react-elastic-carousel'
 import EditForm from './EditForm'
 
-export default function RecipeCard({ recipe, onRemoveRecipe, onHandleView }) {
+export default function RecipeCard({ recipe, viewing, onRemoveRecipe, onHandleView }) {
   const [editForm, setEditForm] = useState(false)
   const [isZoom, setZoom] = useState('false')
 
@@ -23,7 +23,7 @@ export default function RecipeCard({ recipe, onRemoveRecipe, onHandleView }) {
 
       <p dangerouslySetInnerHTML={{ __html: recipe.description }}></p>
 
-      {recipe.viewing && (
+      {viewing && (
         <div className="viewingCard">
           <div className="viewingCard">
             <div
@@ -67,16 +67,13 @@ export default function RecipeCard({ recipe, onRemoveRecipe, onHandleView }) {
 
       <div className="buttons">
         <button onClick={() => onHandleView(recipe.id)}>
-          {' '}
           View {recipe.viewing ? 'less' : 'more'}{' '}
         </button>
         <button className="remove" onClick={() => onRemoveRecipe(recipe.id)}>
-          {' '}
-          Remove{' '}
+          Remove
         </button>
         <button className="edit" onClick={() => setEditForm(true)}>
-          {' '}
-          Edit{' '}
+          Edit
         </button>
       </div>
       {editForm && <EditForm recipe={recipe} setEditForm={setEditForm} />}

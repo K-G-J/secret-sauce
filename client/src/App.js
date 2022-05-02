@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react'
 import SecretRecipe from './ContractABI.json'
 import { contractAddress } from './config'
 import Moralis from 'moralis'
+// import { ConnectButton } from 'web3uikit'
 
 const rpcUrl = 'https://rpc-mumbai.maticvigil.com'
 
@@ -17,13 +18,9 @@ function App() {
   const [authenticated, setAuthenticated] = useState(false)
   const [ethAddress, setEthAddress] = useState(null)
   const [popupActive, setPopupActive] = useState(false)
-  const {
-    isAuthenticated,
-    authenticate,
-    user,
-    logout,
-    isLoggingOut,
-  } = useMoralis()
+  const [viewing, setViewing] = useState(false)
+  const { isAuthenticated, authenticate, user, logout, isLoggingOut } = useMoralis()
+
 
   useEffect(() => {
     async function loadWhitelist() {
@@ -65,9 +62,9 @@ function App() {
 
     recipesClone.forEach((recipe) => {
       if (recipe.id === id) {
-        recipe.viewing = !recipe.viewing
+         setViewing(!viewing)
       } else {
-        recipe.viewing = false
+        setViewing(false)
       }
     })
 
@@ -77,11 +74,7 @@ function App() {
   const removeRecipe = async (id) => {
     const provider = await Moralis.enableWeb3()
     const signer = provider.getSigner()
-    const contract = new ethers.Contract(
-      contractAddress,
-      SecretRecipe.abi,
-      signer,
-    )
+    const contract = new ethers.Contract( contractAddress, SecretRecipe.abi, signer )
     await contract.deleteRecipe(id)
   }
 
@@ -90,6 +83,7 @@ function App() {
       {!authenticated && (
         <div className="auth-btn">
           <button onClick={connectWallet}>Authenticate</button>
+          {/* <ConnectButton signingMessage="Sign in to Secret Sauce" onClick={connectWallet} /> */}
         </div>
       )}
       {authenticated && isAuthenticated && (
@@ -108,6 +102,7 @@ function App() {
                 className="recipeCard"
                 key={i}
                 recipe={recipe}
+                viewing={viewing}
                 onHandleView={handleView}
                 onRemoveRecipe={removeRecipe}
               />
