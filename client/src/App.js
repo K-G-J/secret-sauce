@@ -29,16 +29,9 @@ function App() {
   const [authenticated, setAuthenticated] = useState(false)
   const [popupActive, setPopupActive] = useState(false)
   const [viewing, setViewing] = useState(false)
-  const {
-    isAuthenticated,
-    authenticate,
-    user,
-    logout,
-    isLoggingOut,
-  } = useMoralis()
+  const { isAuthenticated, authenticate, logout, isLoggingOut } = useMoralis()
 
   let [loading, setLoading] = useState(false)
-  let [color, setColor] = useState('#ffffff')
 
   useEffect(() => {
     async function loadWhitelist() {
@@ -69,7 +62,6 @@ function App() {
           const contractRecipes = await contract.getRecipes()
           contractRecipes.forEach(recipe => recipe.id.toNumber())
           setRecipes(contractRecipes)
-          console.log(contractRecipes)
           setLoading(false)
         })
       }
@@ -97,20 +89,6 @@ function App() {
 
   const refresh = () => {
     window.location.reload()
-  }
-
-  const handleView = (id) => {
-    const recipesClone = [...recipes]
-
-    recipesClone.forEach((recipe) => {
-      if (recipe.id === id) {
-        setViewing(!viewing)
-      } else {
-        setViewing(false)
-      }
-    })
-
-    setRecipes(recipesClone)
   }
 
   const removeRecipe = async (id) => {
@@ -178,7 +156,7 @@ function App() {
 
             <div className="sweet-loading">
               <ClockLoader
-                color={color}
+                color={'#ffffff'}
                 loading={loading}
                 css={override}
                 size={150}
@@ -192,7 +170,6 @@ function App() {
                     className="recipeCard"
                     key={i}
                     recipe={recipe}
-                    onHandleView={handleView}
                     onRemoveRecipe={removeRecipe}
                   />
                 ))}

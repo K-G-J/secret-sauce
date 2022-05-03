@@ -8,7 +8,7 @@ import SecretRecipe from '../ContractABI.json'
 import { contractAddress } from '../config'
 
 export default function EditForm({ recipe, setEditForm }) {
-  const { setLoading, recipes } = useContext(StateContext)
+  const { setLoading } = useContext(StateContext)
 
   const recipeClone = { ...recipe }
   const { saveFile } = useMoralisFile()

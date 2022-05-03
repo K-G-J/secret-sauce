@@ -6,7 +6,8 @@ import EditForm from './EditForm'
 export default function RecipeCard({recipe, onRemoveRecipe, onHandleView}) {
   const [editForm, setEditForm] = useState(false)
   const [isZoom, setZoom] = useState('false')
-  const { viewing, setLoading, setRecipes } = useContext(StateContext)
+  const { setRecipes, recipes } = useContext(StateContext)
+  const [viewing, setViewing] = useState(false)
 
   const breakPoints = [
     { width: 1, itemsToShow: 1 },
@@ -19,10 +20,20 @@ export default function RecipeCard({recipe, onRemoveRecipe, onHandleView}) {
     setZoom(!isZoom)
   }
 
+  const handleView = (id) => {
+    const recipesClone = [...recipes]
+
+    recipesClone.forEach((recipe) => {
+      if (recipe.id === id) {
+        setViewing(!viewing)
+      }
+    })
+    setRecipes(recipesClone)
+  }
+
   return (
     <div className="recipe" key={recipe.id}>
       <h3>{recipe.title}</h3>
-      <h3>{recipe.id.toNumber()}</h3>
 
       <p dangerouslySetInnerHTML={{ __html: recipe.description }}></p>
 
@@ -44,7 +55,7 @@ export default function RecipeCard({recipe, onRemoveRecipe, onHandleView}) {
                       className="recipeImage"
                       key={i}
                       src={imageUrl}
-                      alt="recipe-picture"
+                      alt='recipe'
                     />
                   ))}
                 </Carousel>
@@ -69,8 +80,8 @@ export default function RecipeCard({recipe, onRemoveRecipe, onHandleView}) {
       )}
 
       <div className="buttons">
-        <button onClick={() => onHandleView(recipe.id)}>
-          View {recipe.viewing ? 'less' : 'more'}{' '}
+        <button onClick={() => handleView(recipe.id)}>
+          View {viewing ? 'less' : 'more'}{' '}
         </button>
         <button className="remove" onClick={() => onRemoveRecipe(recipe.id)}>
           Remove
