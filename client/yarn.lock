@@ -9750,10 +9750,27 @@ mkdirp@^1.0.3, mkdirp@^1.0.4:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
-moralis@^1.5.11, moralis@^1.5.9:
+moralis@^1.5.9:
   version "1.5.11"
   resolved "https://registry.yarnpkg.com/moralis/-/moralis-1.5.11.tgz#6d89f09aeaa2bf5be77d8ed5da9f32ba8628d619"
   integrity sha512-JmtW13miPDQ2LUr9KN3Lzh1ekjf5BUCPENx0peejipWVwPtA/AsW9iMK9/SyIrXGNDYPodcJcRMmh1voZ3fCrg==
+  dependencies:
+    "@babel/runtime" "7.16.7"
+    "@babel/runtime-corejs3" "7.16.8"
+    "@metamask/detect-provider" "^1.2.0"
+    axios "0.26.1"
+    ethers "5.6.0"
+    react-native-crypto-js "1.0.0"
+    uuid "^8.3.2"
+    ws "^8.3.0"
+    xmlhttprequest "1.8.0"
+  optionalDependencies:
+    crypto-js "4.1.1"
+
+moralis@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/moralis/-/moralis-1.6.0.tgz#f86f303255ff7e39e9f13a49a76377bc0c2646d6"
+  integrity sha512-NMRJqtrtK7znND/IEro0EYsGVDahpFHxaCGGy/L3VnEyMURzB0OzvRrXshk6TZxG01mCOwrtO/h8L/t0OEOr3g==
   dependencies:
     "@babel/runtime" "7.16.7"
     "@babel/runtime-corejs3" "7.16.8"

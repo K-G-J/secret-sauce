@@ -8,12 +8,13 @@ import SecretRecipe from '../ContractABI.json'
 import { contractAddress } from '../config'
 
 export default function EditForm({ recipe, setEditForm }) {
-  const { setLoading, setRecipes } = useContext(StateContext)
+  const { setLoading } = useContext(StateContext)
 
   const recipeClone = { ...recipe }
   const { saveFile } = useMoralisFile()
 
   const [updatedRecipe, updateRecipe] = useState({
+    id: recipeClone.id,
     title: recipeClone.title,
     description: recipeClone.description,
     ingredients: recipeClone.ingredients,
@@ -26,6 +27,8 @@ export default function EditForm({ recipe, setEditForm }) {
 
   const handleUpdate = async (e, id) => {
     e.preventDefault()
+    const recipeId = id.toNumber() + 1
+    console.log(recipeId)
     if (!updatedRecipe.title || !updatedRecipe.description || !updatedRecipe.ingredients || !updatedRecipe.steps) {
       alert('Please fill out all the fields')
       return
@@ -33,7 +36,7 @@ export default function EditForm({ recipe, setEditForm }) {
     const provider = await Moralis.enableWeb3()
     const signer = provider.getSigner()
     const contract = new ethers.Contract(contractAddress, SecretRecipe.abi, signer)
-    const transaction = await contract.editRecipe(id, updatedRecipe.title, updatedRecipe.description, updatedRecipe.ingredients, updatedRecipe.steps, updatedRecipe.images)
+    await contract.editRecipe(recipeId, updatedRecipe.title, updatedRecipe.description, updatedRecipe.ingredients, updatedRecipe.steps, updatedRecipe.images)
 
     updateRecipe({
       title: '',
@@ -44,10 +47,6 @@ export default function EditForm({ recipe, setEditForm }) {
     })
     setEditForm(false);
     setLoading(true)
-    await transaction.wait()
-    let contractRecipes = await contract.getRecipes()
-    setRecipes(contractRecipes)
-    setLoading(false)
   }
 
   const handleIngredient = (e, i) => {
@@ -98,7 +97,7 @@ export default function EditForm({ recipe, setEditForm }) {
       <div className="popup-inner">
         <h2>Edit Recipe</h2>
 
-        <form onSubmit={handleUpdate}>
+        <form onSubmit={() => handleUpdate(recipeClone.id)}>
           <div className="form-group">
             <label>Title</label>
             <input

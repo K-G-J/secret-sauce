@@ -8,7 +8,7 @@ import SecretRecipe from '../ContractABI.json'
 import { contractAddress } from '../config'
 
 export default function Form() {
-  const { setPopupActive, setLoading, setRecipes } = useContext(StateContext)
+  const { setPopupActive, setLoading } = useContext(StateContext)
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -29,7 +29,7 @@ export default function Form() {
     const provider = await Moralis.enableWeb3()
     const signer = provider.getSigner()
     const contract = new ethers.Contract(contractAddress, SecretRecipe.abi, signer)
-    const transaction = await contract.addRecipe(form.title, form.description, form.ingredients, form.steps, form.images)
+    await contract.addRecipe(form.title, form.description, form.ingredients, form.steps, form.images)
 
     setForm({
       title: '',
@@ -40,10 +40,6 @@ export default function Form() {
     })
     setLoading(true)
     setPopupActive(false)
-    await transaction.wait()
-    let contractRecipes = await contract.getRecipes()
-    setRecipes(contractRecipes)
-    setLoading(false)
   }
   
   const handleIngredient = (e, i) => {
