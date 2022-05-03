@@ -22,6 +22,7 @@ export default function RecipeCard({recipe, onRemoveRecipe, onHandleView}) {
   return (
     <div className="recipe" key={recipe.id}>
       <h3>{recipe.title}</h3>
+      <h3>{recipe.id.toNumber()}</h3>
 
       <p dangerouslySetInnerHTML={{ __html: recipe.description }}></p>
 

@@ -8,13 +8,12 @@ import SecretRecipe from '../ContractABI.json'
 import { contractAddress } from '../config'
 
 export default function EditForm({ recipe, setEditForm }) {
-  const { setLoading } = useContext(StateContext)
+  const { setLoading, recipes } = useContext(StateContext)
 
   const recipeClone = { ...recipe }
   const { saveFile } = useMoralisFile()
 
   const [updatedRecipe, updateRecipe] = useState({
-    id: recipeClone.id,
     title: recipeClone.title,
     description: recipeClone.description,
     ingredients: recipeClone.ingredients,
@@ -27,8 +26,7 @@ export default function EditForm({ recipe, setEditForm }) {
 
   const handleUpdate = async (e, id) => {
     e.preventDefault()
-    const recipeId = id.toNumber() + 1
-    console.log(recipeId)
+    const recipeId = id.toNumber()
     if (!updatedRecipe.title || !updatedRecipe.description || !updatedRecipe.ingredients || !updatedRecipe.steps) {
       alert('Please fill out all the fields')
       return

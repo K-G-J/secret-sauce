@@ -67,6 +67,7 @@ function App() {
         )
         contract.on('RecipeEvent', async () => {
           const contractRecipes = await contract.getRecipes()
+          contractRecipes.forEach(recipe => recipe.id.toNumber())
           setRecipes(contractRecipes)
           console.log(contractRecipes)
           setLoading(false)
@@ -77,20 +78,20 @@ function App() {
   }, [])
 
   const connectWallet = async () => {
-    authenticate({
+    let loggedUser = await authenticate({
       signingMessage: 'Sign in to Secret Sauce',
     })
-    const address = await user.get('ethAddress')
+    const address = await loggedUser.get('ethAddress')
     const formattedAddress = utils.getAddress(address)
     setLoading(true)
     if (whitelist.includes(formattedAddress)) {
-    setAuthenticated(true)
-    const provider = await Moralis.enableWeb3()
-    const signer = provider.getSigner()
-    const contract = new ethers.Contract( contractAddress, SecretRecipe.abi, signer )
-    let contractRecipes = await contract.getRecipes()
-    setRecipes(contractRecipes)
-    setLoading(false)
+      setAuthenticated(true)
+      const provider = await Moralis.enableWeb3()
+      const signer = provider.getSigner()
+      const contract = new ethers.Contract( contractAddress, SecretRecipe.abi, signer )
+      const contractRecipes = await contract.getRecipes()
+      setRecipes(contractRecipes)
+      setLoading(false)
     }
   }
 
@@ -121,7 +122,7 @@ function App() {
   }
 
   const handleLogout = async () => {
-    // logout()
+    logout()
     setAuthenticated(false)
   }
 
@@ -157,7 +158,7 @@ function App() {
                 Logout
               </button>
             </div>
-            
+
             <div className="logo-container">
               <h1 onClick={refresh} id="logo-text">
                 Secret Sauce

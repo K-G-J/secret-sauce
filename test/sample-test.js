@@ -14,8 +14,16 @@ describe('SecretRecipe', async function () {
       ['step1', 'step2', 'step3'],
       ['image1', 'image2', 'image3'],
     )
+      await secretRecipe.addRecipe(
+      'Test Title 2',
+      'This is a test decription 2',
+      ['ingredient4', 'ingredient5', 'ingredient6'],
+      ['step4', 'step5', 'step6'],
+      ['image4', 'image5', 'image6'],
+    )
 
     const recipes = await secretRecipe.getRecipes()
+    expect(recipes[0].id).to.equal(1)
     expect(recipes[0].title).to.equal('Test Title')
     expect(recipes[0].description).to.equal('This is a test decription')
     expect(recipes[0].ingredients).to.eql([
@@ -25,6 +33,18 @@ describe('SecretRecipe', async function () {
     ])
     expect(recipes[0].steps).to.eql(['step1', 'step2', 'step3'])
     expect(recipes[0].images).to.eql(['image1', 'image2', 'image3'])
+    
+    expect(recipes[1].id).to.equal(2)
+    expect(recipes[1].title).to.equal('Test Title 2')
+    expect(recipes[1].description).to.equal('This is a test decription 2')
+    expect(recipes[1].ingredients).to.eql([
+      'ingredient4',
+      'ingredient5',
+      'ingredient6',
+    ])
+    expect(recipes[1].steps).to.eql(['step4', 'step5', 'step6'])
+    expect(recipes[1].images).to.eql(['image4', 'image5', 'image6'])
+    
   })
 
   it('Should edit a recipe', async function () {
