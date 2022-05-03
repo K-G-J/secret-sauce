@@ -87,10 +87,6 @@ function App() {
     }
   }
 
-  const refresh = () => {
-    window.location.reload()
-  }
-
   const removeRecipe = async (id) => {
     const provider = await Moralis.enableWeb3()
     const signer = provider.getSigner()
@@ -106,16 +102,7 @@ function App() {
 
   return (
     <StateContext.Provider
-      value={{
-        setLoading,
-        loading,
-        setPopupActive,
-        popupActive,
-        setRecipes,
-        recipes,
-        setViewing,
-        viewing,
-      }}
+      value={{ setLoading, loading, setPopupActive, popupActive, setRecipes, recipes, setViewing, viewing }}
     >
       <div className="App">
         {!authenticated && (
@@ -138,7 +125,7 @@ function App() {
             </div>
 
             <div className="logo-container">
-              <h1 onClick={refresh} id="logo-text">
+              <h1 id="logo-text">
                 Secret Sauce
               </h1>
             </div>
