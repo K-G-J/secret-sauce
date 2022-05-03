@@ -6,7 +6,7 @@ import EditForm from './EditForm'
 export default function RecipeCard({recipe, onRemoveRecipe, onHandleView}) {
   const [editForm, setEditForm] = useState(false)
   const [isZoom, setZoom] = useState('false')
-  const { setRecipes, recipes } = useContext(StateContext)
+  const { recipes } = useContext(StateContext)
   const [viewing, setViewing] = useState(false)
 
   const breakPoints = [
@@ -21,14 +21,11 @@ export default function RecipeCard({recipe, onRemoveRecipe, onHandleView}) {
   }
 
   const handleView = (id) => {
-    const recipesClone = [...recipes]
-
-    recipesClone.forEach((recipe) => {
+    recipes.forEach((recipe) => {
       if (recipe.id === id) {
         setViewing(!viewing)
       }
     })
-    setRecipes(recipesClone)
   }
 
   return (
